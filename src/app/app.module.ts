@@ -22,6 +22,7 @@ import { AdministracaoComponent } from './administracao/administracao.component'
 import { DesignarTarefaComponent } from './designar-tarefa/designar-tarefa.component';
 import { JwtInterceptor } from '../Services/jwtInterceptor.service';
 import { CreateUserComponent } from './create-user/create-user.component';
+import { CreateCategoryComponent } from './create-category/create-category.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { CreateUserComponent } from './create-user/create-user.component';
     DashboardPageComponent,
     AdministracaoComponent,
     DesignarTarefaComponent,
-    CreateUserComponent
+    CreateUserComponent,
+    CreateCategoryComponent
   ],
   imports: [
     JwtModule.forRoot({

@@ -38,9 +38,11 @@ ngOnInit() {
   const user = localStorage.getItem('user');
   if (user) {
     this.user = JSON.parse(user);
-    this.ListTaskByUser();
+    if (this.user.isLogged) {
+      this.ListTaskByUser();
+    }
   }
-console.log(this.user);
+  console.log(this.user);
 }
   
   closeModal() {
@@ -58,9 +60,23 @@ console.log(this.user);
   
       this.authService.authenticate(user).subscribe(
         (response) => {
+          // Update local user state from response
+          const userData: any = response.user || response;
+          this.user = new userModel();
+          this.user.id = userData.id;
+          this.user.username = userData.username;
+          this.user.isAdmin = userData.isAdmin;
+          this.user.isLogged = true;
+          this.user.profilePicture = userData.profilePicture || '';
+          
+          // Update auth service
           this.authService.setUser(response);
+          
+          // Load tasks for the user
+          this.ListTaskByUser();
+          
+          // Navigate or refresh
           this.router.navigate(['/task-done']);
-          window.location.reload();
         },
         (error) => {
           this.showError = true;
