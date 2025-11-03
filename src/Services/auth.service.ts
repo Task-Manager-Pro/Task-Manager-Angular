@@ -30,30 +30,69 @@ export class AuthService {
     const url = `${environment.apiBaseUrl}/api/login/authenticate`;
     return this.http.post<any>(url, user).pipe(
       map((response) => {
-        if (response && response.value && response.value.user) {
-          this.user = response.value;
+        // Handle both direct response and wrapped response
+        const responseData = response.value || response;
+        
+        if (responseData && responseData.user && responseData.token) {
           const userData = {
-            id: this.user.user.id,
-            username: this.user.user.username,
-            isAdmin: this.user.user.isAdmin,
+            id: responseData.user.id,
+            username: responseData.user.username,
+            isAdmin: responseData.user.isAdmin,
             isLogged: true,
-            profilePicture: this.user.user.profilePicture
+            profilePicture: responseData.user.profilePicture || ''
           };
          
           localStorage.setItem('user', JSON.stringify(userData));
-          localStorage.setItem('jwtToken', this.user.token);
-          return this.user;
+          localStorage.setItem('jwtToken', responseData.token);
+          
+          // Extract expiration date from JWT token
+          let expirationDate: Date = new Date();
+          try {
+            const decodedToken = JSON.parse(atob(responseData.token.split('.')[1]));
+            if (decodedToken.exp) {
+              expirationDate = new Date(decodedToken.exp * 1000);
+            }
+          } catch (error) {
+            console.warn('Erro ao decodificar token:', error);
+          }
+          
+          // Update the service user property
+          this.user = {
+            ...userData,
+            token: responseData.token
+          };
+          
+          return {
+            token: responseData.token,
+            user: userData,
+            isLogged: true,
+            expirationDate: expirationDate
+          } as LoginResponse;
         } else {
           console.error('Resposta do servidor é inválida:', response);
+          throw new Error('Resposta do servidor inválida');
         }
       }),
     );
   }
   
 
-  setUser(user: LoginResponse) {
-    user.isLogged = true;
-    this.user = user;
+  setUser(user: LoginResponse | any) {
+    if (user && user.user) {
+      this.user = {
+        ...user.user,
+        isLogged: true
+      };
+      // Ensure localStorage is updated
+      if (this.user) {
+        localStorage.setItem('user', JSON.stringify(this.user));
+      }
+    } else {
+      this.user = user;
+      if (user && user.isLogged !== undefined) {
+        user.isLogged = true;
+      }
+    }
   }
 
   isLoggedIn(): boolean {
