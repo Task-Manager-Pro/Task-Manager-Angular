@@ -23,6 +23,7 @@ import { DesignarTarefaComponent } from './designar-tarefa/designar-tarefa.compo
 import { JwtInterceptor } from '../Services/jwtInterceptor.service';
 import { CreateUserComponent } from './create-user/create-user.component';
 import { CreateCategoryComponent } from './create-category/create-category.component';
+import { KanbanBoardComponent } from './kanban-board/kanban-board.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { CreateCategoryComponent } from './create-category/create-category.compo
     AdministracaoComponent,
     DesignarTarefaComponent,
     CreateUserComponent,
-    CreateCategoryComponent
+    CreateCategoryComponent,
+    KanbanBoardComponent
   ],
   imports: [
     JwtModule.forRoot({

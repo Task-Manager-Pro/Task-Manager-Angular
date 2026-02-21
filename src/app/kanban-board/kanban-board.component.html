@@ -1,0 +1,68 @@
+<div class="container-fluid kanban-wrapper py-3">
+  <div class="alert" [ngClass]="'alert-' + feedbackType" *ngIf="feedbackMessage">
+    {{ feedbackMessage }}
+  </div>
+
+  <div class="row g-3">
+    <div class="col" *ngFor="let column of columns; trackBy: trackByColumnId">
+      <div class="kanban-column"
+           (dragover)="$event.preventDefault()"
+           (drop)="onDrop(column.id, column.tasks.length)">
+        <div class="column-header">
+          <h5>{{ column.name }}</h5>
+          <span class="badge bg-secondary">{{ column.tasks.length }}</span>
+        </div>
+
+        <div class="task-list">
+          <div class="task-card"
+               *ngFor="let task of column.tasks; let i = index; trackBy: trackByTaskId"
+               draggable="true"
+               [class.pending-move]="isTaskMovePending(task.id)"
+               (dragstart)="onDragStart(task)"
+               (dragover)="$event.preventDefault()"
+               (drop)="onDrop(column.id, i)"
+               (click)="selectTask(task)">
+            <h6>{{ task.title }}</h6>
+            <p>{{ task.description }}</p>
+            <small class="text-muted">#{{ task.id }} · Ordem {{ task.order }}</small>
+
+            <div class="save-indicator" *ngIf="getSavingState(task.id) !== 'idle'">
+              <span *ngIf="getSavingState(task.id) === 'saving'">Saving...</span>
+              <span *ngIf="getSavingState(task.id) === 'saved'">Saved</span>
+              <span *ngIf="getSavingState(task.id) === 'error'">Erro ao salvar</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card edit-panel mt-4" *ngIf="selectedTaskId">
+    <div class="card-body">
+      <h5 class="card-title">Editar tarefa #{{ selectedTaskId }}</h5>
+
+      <form [formGroup]="taskForm" class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Título</label>
+          <input type="text" class="form-control" formControlName="title">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Prazo</label>
+          <input type="date" class="form-control" formControlName="dueDate">
+        </div>
+        <div class="col-12">
+          <label class="form-label">Descrição</label>
+          <textarea class="form-control" rows="3" formControlName="description"></textarea>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Estimativa (min)</label>
+          <input type="number" class="form-control" formControlName="estimateMinutes">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Gasto (min)</label>
+          <input type="number" class="form-control" formControlName="spentMinutes">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
