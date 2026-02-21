@@ -1,0 +1,51 @@
+.kanban-wrapper {
+  color: #e6edf3;
+}
+
+.kanban-column {
+  background: #1f2937;
+  border-radius: 12px;
+  padding: 12px;
+  min-height: 400px;
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.task-card {
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: grab;
+}
+
+.task-card.pending-move {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.task-card:active {
+  cursor: grabbing;
+}
+
+.save-indicator {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: #93c5fd;
+}
+
+.edit-panel {
+  background: #111827;
+  border: 1px solid #374151;
+}
