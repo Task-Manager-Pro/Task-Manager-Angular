@@ -10,31 +10,78 @@
 
 <br />
 
+# Dependências principais
+* **Angular 16** – framework do projeto
+* **@angular/cdk** – Angular CDK (drag-and-drop no quadro de tarefas)
+* **@ng-bootstrap/ng-bootstrap** – componentes Bootstrap para Angular
+* **@auth0/angular-jwt** – autenticação JWT
+
+<br />
+
 # Iniciando o projeto
-Para rodar o projeto você precisa antes de algumas ferramentas instaladas:
-* Visual Studio (Preferência)
-* ter o  <a href="https://github.com/Romulo-Queiroz/Todo" target="blank">Backend</a> em sua máquina
-#### Instruções:
-* Inicie o projeto instalando as dependências ``` npm install```
-* O projeto pode ser executado com ``` ng serve ``` e estará disponível em ``` http://localhost:4200/```
 
+## Rodando pela primeira vez
 
-## Clonando o beckend
-```bash
-git clone https://github.com/Romulo-Queiroz/Todo
-```
-## Clonando o frontend
+### Pré-requisitos
+* **Node.js** (recomendado LTS) e **npm**
+* **Angular CLI** (opcional, para usar `ng` no terminal)
+* Ter o [Backend](https://github.com/Romulo-Queiroz/Todo) rodando na sua máquina
+
+### 1. Clonar o repositório
 ```bash
 git clone https://github.com/Romulo-Queiroz/todoListFront
+cd todoListFront
 ```
-## Aviso
-Você precisa verificar se possui a ultima versão do angular instalado
 
-#### Caso não tenha execute o comando via CLI/npm:
+### 2. Instalar dependências
+Na raiz do projeto, execute:
+
 ```bash
-npm i @angular/cli
+npm install
 ```
-* Você poderá encontrar pequenos conflitos então use o ```--froce``` (estamos resolvendo aos poucos os conflitos 10/12/23)
+
+Se aparecer erro de conflito de dependências (peer dependencies), use:
+
+```bash
+npm install --legacy-peer-deps
+```
+
+### 3. Subir a aplicação
+```bash
+npm start
+```
+
+ou, se tiver o Angular CLI instalado:
+
+```bash
+ng serve
+```
+
+A aplicação ficará disponível em **http://localhost:4200/**.
+
+### 4. Backend
+O frontend consome a API do backend. Clone e execute o backend antes de usar o projeto:
+
+```bash
+git clone https://github.com/Romulo-Queiroz/Todo
+# Siga as instruções do repositório do backend para subir a API
+```
+
+---
+
+## Comandos úteis
+| Comando | Descrição |
+|--------|-----------|
+| `npm start` | Sobe o servidor de desenvolvimento |
+| `npm run build` | Gera o build de produção |
+| `ng serve` | Sobe o servidor (requer Angular CLI) |
+
+## Aviso
+* Verifique se possui uma versão compatível do Angular CLI. Caso precise instalar ou atualizar:
+  ```bash
+  npm i -g @angular/cli@16
+  ```
+* Em caso de conflitos de dependências, use `npm install --legacy-peer-deps`.
 # Autor
 <div align="center">
 

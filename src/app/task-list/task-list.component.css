@@ -1,115 +1,249 @@
+/* ---- Board ---- */
 .task-board {
-  color: #e6e6e6;
-  padding: 2rem 1rem;
+  --column-bg: #f3f4f6;
+  --card-bg: #ffffff;
+  --card-border: #e5e7eb;
+  --card-accent-pending: #0078d4;
+  --card-accent-done: #107c10;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --tag-bg: #deebf7;
+  --tag-text: #005a9e;
+  --tag-done-bg: #dff6dd;
+  --tag-done-text: #107c10;
+  padding: 1.5rem 1rem;
+  min-height: 100%;
 }
 
 .board-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.board-columns {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(280px, 1fr));
-  gap: 1rem;
-}
-
-.column {
-  background: #1f2733;
-  border: 1px solid #303a46;
-  border-radius: 10px;
-  padding: 1rem;
-  min-height: 480px;
-}
-
-.column header {
-  margin-bottom: 1rem;
-}
-
-.column h3 {
-  margin: 0;
-}
-
-.column span {
-  font-size: 0.85rem;
-  color: #aab4c0;
-}
-
-.task-list,
-.drop-zone {
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
   gap: 0.75rem;
 }
 
-.task-card {
-  background: #384555;
-  border: 1px solid #4c6079;
+.board-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.btn-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* ---- Columns ---- */
+.board-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(300px, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+.column {
+  background: var(--column-bg);
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
-  padding: 0.9rem;
-  cursor: grab;
+  padding: 0.75rem;
+  min-height: 420px;
 }
 
-.task-card.done {
-  opacity: 0.9;
-  cursor: grab;
+.column-header {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.task-card-handle {
-  cursor: grab;
+.column-title {
+  margin: 0 0 0.15em 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
-.task-card-handle:active {
+.column-count {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.column-drop {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 360px;
+  padding: 0.25rem 0;
+}
+
+.column-empty {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 1.5rem 0.75rem;
+  margin: 0;
+  border: 1px dashed #d1d5db;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* ---- Cards (Azure/Confluence style) ---- */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  cursor: grab;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-color: #d1d5db;
+}
+
+.card-handle {
+  cursor: grab;
+  padding: 0.75rem 0.75rem 0.5rem 1rem;
+  border-left: 3px solid var(--card-accent-pending);
+}
+
+.card-handle:active {
   cursor: grabbing;
 }
 
-.task-card.cdk-drag-dragging .task-card-handle {
+.card.cdk-drag-dragging .card-handle {
   cursor: grabbing;
 }
 
+.card-done .card-handle {
+  border-left-color: var(--card-accent-done);
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.25rem;
+}
+
+.card-id {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.card-title {
+  margin: 0 0 0.35em 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.card-description {
+  margin: 0 0 0.5em 0;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.card-meta {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.card-tag {
+  display: inline-block;
+  padding: 0.2em 0.5em;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  border-radius: 4px;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.card-tag-done {
+  background: var(--tag-done-bg);
+  color: var(--tag-done-text);
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  padding: 0.4rem 0.75rem 0.5rem;
+  background: #fafafa;
+  border-top: 1px solid #f3f4f6;
+}
+
+.card-action {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-secondary);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.card-action:hover {
+  background: #f3f4f6;
+  color: var(--text-primary);
+}
+
+.card-action-edit:hover {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.card-action-delete:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* ---- CDK drag-drop ---- */
 .cdk-drag-placeholder {
   opacity: 0;
 }
 
-.cdk-drag-preview .task-card {
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+.cdk-drag-preview .card {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   cursor: grabbing;
+  border-radius: 6px;
 }
 
 .cdk-drag-animating {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.task-id {
-  margin: 0;
-  color: #9bd0ff;
-  font-size: 0.9rem;
-}
-
-.button-group {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.drop-zone {
-  min-height: 380px;
-  border: 2px dashed transparent;
-  border-radius: 8px;
-  padding: 0.5rem;
-  transition: all 0.2s ease;
-}
-
-.task-list.cdk-drop-list-dragging .task-card:not(.cdk-drag-placeholder) {
+.column-drop.cdk-drop-list-dragging .card:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.drop-zone-text {
-  color: #9ca7b5;
-  text-align: center;
-  margin: 2rem 0;
 }
 
 @media (max-width: 900px) {
