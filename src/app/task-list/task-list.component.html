@@ -1,66 +1,74 @@
 <div class="task-board container-fluid">
   <div class="board-header">
-    <h2>Quadro de Tarefas (Drag and Drop)</h2>
-    <button class="btn btn-primary" (click)="openCreateTaskModal()">Criar Tarefa</button>
+    <h1 class="board-title">Quadro de Tarefas</h1>
+    <button type="button" class="btn btn-primary btn-new" (click)="openCreateTaskModal()">
+      <span class="btn-icon">+</span> Nova tarefa
+    </button>
   </div>
 
   <div class="board-columns">
-    <section class="column pending-column">
-      <header>
-        <h3>A Fazer</h3>
-        <span>{{ pendingTasks.length }} tarefa(s)</span>
+    <section class="column column-pending">
+      <header class="column-header">
+        <h2 class="column-title">A Fazer</h2>
+        <span class="column-count">{{ pendingTasks.length }} tarefa(s)</span>
       </header>
-
       <div
-        class="task-list"
+        class="column-drop"
         cdkDropList
         id="pendingList"
         [cdkDropListConnectedTo]="['doneList']"
         [cdkDropListData]="pendingTasks"
         (cdkDropListDropped)="onDrop($event)"
       >
-        <article class="task-card" *ngFor="let tarefa of pendingTasks" cdkDrag [cdkDragData]="tarefa">
-          <div class="task-card-handle" cdkDragHandle>
-            <p class="task-id">#{{ tarefa.taskId }}</p>
-            <h5>{{ tarefa.taskTitle }}</h5>
-            <p><strong>Descrição:</strong> {{ tarefa.taskDescription }}</p>
-            <p><strong>Categoria:</strong> {{ tarefa.categoryName }}</p>
+        <article class="card card-pending" *ngFor="let tarefa of pendingTasks" cdkDrag [cdkDragData]="tarefa">
+          <div class="card-handle" cdkDragHandle>
+            <div class="card-top">
+              <span class="card-id">#{{ tarefa.taskId }}</span>
+            </div>
+            <h3 class="card-title">{{ tarefa.taskTitle }}</h3>
+            <p class="card-description" *ngIf="tarefa.taskDescription">{{ tarefa.taskDescription }}</p>
+            <div class="card-meta">
+              <span class="card-tag" *ngIf="tarefa.categoryName">{{ tarefa.categoryName }}</span>
+            </div>
           </div>
-          <div class="button-group">
-            <button class="btn btn-danger" (click)="openConfirmationModal(tarefa.taskId)">Deletar</button>
-            <button class="btn btn-warning" (click)="openUpdateTaskModal(tarefa.taskId)">Editar</button>
+          <div class="card-actions">
+            <button type="button" class="card-action card-action-edit" (click)="openUpdateTaskModal(tarefa.taskId)" title="Editar">Editar</button>
+            <button type="button" class="card-action card-action-delete" (click)="openConfirmationModal(tarefa.taskId)" title="Deletar">Deletar</button>
           </div>
         </article>
-        <p *ngIf="pendingTasks.length === 0" class="drop-zone-text">Nenhuma tarefa a fazer.</p>
+        <p *ngIf="pendingTasks.length === 0" class="column-empty">Nenhuma tarefa. Arraste itens aqui ou crie uma nova.</p>
       </div>
     </section>
 
-    <section class="column done-column">
-      <header>
-        <h3>Concluídas</h3>
-        <span>{{ doneTasks.length }} tarefa(s) · Arraste para mover</span>
+    <section class="column column-done">
+      <header class="column-header">
+        <h2 class="column-title">Concluídas</h2>
+        <span class="column-count">{{ doneTasks.length }} tarefa(s)</span>
       </header>
-
       <div
-        class="task-list drop-zone"
+        class="column-drop"
         cdkDropList
         id="doneList"
         [cdkDropListConnectedTo]="['pendingList']"
         [cdkDropListData]="doneTasks"
         (cdkDropListDropped)="onDrop($event)"
       >
-        <article class="task-card done" *ngFor="let tarefa of doneTasks" cdkDrag [cdkDragData]="tarefa">
-          <div class="task-card-handle" cdkDragHandle>
-            <p class="task-id">#{{ tarefa.taskId }}</p>
-            <h5>{{ tarefa.taskTitle }}</h5>
-            <p><strong>Descrição:</strong> {{ tarefa.taskDescription }}</p>
-            <p><strong>Categoria:</strong> {{ tarefa.categoryName }}</p>
+        <article class="card card-done" *ngFor="let tarefa of doneTasks" cdkDrag [cdkDragData]="tarefa">
+          <div class="card-handle" cdkDragHandle>
+            <div class="card-top">
+              <span class="card-id">#{{ tarefa.taskId }}</span>
+            </div>
+            <h3 class="card-title">{{ tarefa.taskTitle }}</h3>
+            <p class="card-description" *ngIf="tarefa.taskDescription">{{ tarefa.taskDescription }}</p>
+            <div class="card-meta">
+              <span class="card-tag card-tag-done" *ngIf="tarefa.categoryName">{{ tarefa.categoryName }}</span>
+            </div>
           </div>
-          <div class="button-group">
-            <button class="btn btn-danger" (click)="openConfirmationModal(tarefa.taskId)">Deletar</button>
+          <div class="card-actions">
+            <button type="button" class="card-action card-action-delete" (click)="openConfirmationModal(tarefa.taskId)" title="Deletar">Deletar</button>
           </div>
         </article>
-        <p *ngIf="doneTasks.length === 0" class="drop-zone-text">Arraste uma tarefa aqui para marcar como concluída.</p>
+        <p *ngIf="doneTasks.length === 0" class="column-empty">Arraste uma tarefa aqui para marcar como concluída.</p>
       </div>
     </section>
   </div>

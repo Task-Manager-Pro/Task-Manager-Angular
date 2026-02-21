@@ -1,13 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap/dist/css/bootstrap.min.css";
 
-/* CDK drag-drop: preview anexado ao body */
-.cdk-drag-preview .task-card {
-  background: #384555;
-  border: 1px solid #4c6079;
-  border-radius: 8px;
-  padding: 0.9rem;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+/* CDK drag-drop: preview anexado ao body (cards estilo Azure) */
+.cdk-drag-preview .card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   cursor: grabbing;
-  color: #e6e6e6;
+  color: #1f2937;
 }
