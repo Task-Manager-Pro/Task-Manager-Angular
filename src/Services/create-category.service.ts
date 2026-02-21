@@ -10,6 +10,17 @@ import { catchError, map } from 'rxjs/operators';
 export class CreateCategoryService {
   constructor(private http: HttpClient) {}
 
+  getCategories(): Observable<any[]> {
+    const url = `${environment.apiBaseUrl}/api/CategorieTaskManager`;
+    return this.http.get<any>(url).pipe(
+      map((response) => (Array.isArray(response) ? response : response?.value ?? [])),
+      catchError((error) => {
+        console.error('Erro ao listar categorias:', error);
+        return throwError(error);
+      })
+    );
+  }
+
   createCategory(newCategory: any): Observable<any> {
     const url = `${environment.apiBaseUrl}/api/CategorieTaskManager/CreateCategorieTask`;
 
