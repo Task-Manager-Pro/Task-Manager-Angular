@@ -13,4 +13,9 @@ export class MarkTaskAsUndoneService {
     const url = `${environment.apiBaseUrl}/done/${taskId}`;
     return this.http.put(url, { done: true });
   }
+
+  markTaskAsUndone(taskId: number): Observable<any> {
+    const url = `${environment.apiBaseUrl}/done/${taskId}`;
+    return this.http.put(url, { done: false });
+  }
 }

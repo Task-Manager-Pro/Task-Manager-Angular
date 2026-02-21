@@ -16,10 +16,13 @@
         </div>
         <div class="mb-3">
           <label for="taskCategory" class="form-label">Categoria</label>
-          <select class="form-select" id="priority" formControlName="taskCategory">
-            <option value="1">Refatoração</option>
-            <option value="2">Implementação</option>
+          <select class="form-select" id="taskCategory" formControlName="taskCategory">
+            <option [ngValue]="null" disabled>Selecione uma categoria</option>
+            <option *ngFor="let cat of categories" [ngValue]="cat.id ?? cat.Id ?? cat.categorieTaskId">
+              {{ cat.name ?? cat.Name ?? cat.categoryName ?? cat.category ?? 'Categoria' }}
+            </option>
           </select>
+          <small class="text-muted" *ngIf="categories.length === 0">Carregando categorias...</small>
         </div>
       </form>
     </div>

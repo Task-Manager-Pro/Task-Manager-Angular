@@ -24,6 +24,7 @@ import { JwtInterceptor } from '../Services/jwtInterceptor.service';
 import { CreateUserComponent } from './create-user/create-user.component';
 import { CreateCategoryComponent } from './create-category/create-category.component';
 import { KanbanBoardComponent } from './kanban-board/kanban-board.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { KanbanBoardComponent } from './kanban-board/kanban-board.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DragDropModule
   ],
   providers: [AuthGuard, LoginComponent, 
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },],

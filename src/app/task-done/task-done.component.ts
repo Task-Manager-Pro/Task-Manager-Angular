@@ -27,25 +27,28 @@ export class TaskDoneComponent {
       if (user) {
         this.user = JSON.parse(user);
       }
-      if (this.tarefasConcluidas.length === 0 && this.user.id) {
-       this.listTaskByUser.listTaskByUserId(this.user.id).subscribe(
-          (response) => {
-            if (response && response.value && Array.isArray(response.value)) {
-              this.tarefasConcluidas = response.value.filter((task: any) => task.done);
-              console.log('Tarefas concluídas:', this.tarefasConcluidas);
-            } else {
-              console.error('Resposta do servidor inválida:', response);
-            }
-          },
-          (error) => {
-            console.error('Erro ao listar as tarefas:', error);
-          }
-        );
-      }
+      this.loadTasks();
     }
-       
+
+    loadTasks() {
+      if (!this.user?.id) return;
+      this.listTaskByUser.listTaskByUserId(this.user.id).subscribe(
+        (response) => {
+          if (response?.value && Array.isArray(response.value)) {
+            this.tarefasConcluidas = response.value.filter((task: any) => task.done);
+          } else {
+            this.tarefasConcluidas = [];
+          }
+        },
+        (error) => {
+          console.error('Erro ao listar as tarefas:', error);
+          this.tarefasConcluidas = [];
+        }
+      );
+    }
+
     openCreateTaskModal() {
-      const modalRef = this.modalService.open(CreateTaskComponent);
+      this.modalService.open(CreateTaskComponent).closed.subscribe(() => this.loadTasks());
     }
 
   openConfirmationModal(taskId: number) {

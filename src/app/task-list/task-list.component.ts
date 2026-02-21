@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { CreateTaskComponent } from '../create-task/create-task.component';
 import { ConfirmationModalComponent } from '../confirmation-modal/confirmation-modal.component';
 import { UpdateTodoComponent } from '../update-todo/update-todo.component';
 import { ListTaskByUserService } from 'src/Services/list-task-by-user.service';
+import { TasksToDoService } from 'src/Services/tasks-to-do.service';
 import { MarkTaskAsUndoneService } from '../../Services/mark-task-done.service';
 import { userModel } from 'src/Models/user.model';
 
@@ -16,12 +20,12 @@ export class TaskListComponent implements OnInit {
   pendingTasks: any[] = [];
   doneTasks: any[] = [];
   user: userModel = new userModel();
-  draggingTaskId: number | null = null;
 
   constructor(
     private modalService: NgbModal,
     private markTaskAsUndoneService: MarkTaskAsUndoneService,
-    private listTaskByUser: ListTaskByUserService
+    private listTaskByUser: ListTaskByUserService,
+    private tasksToDoService: TasksToDoService
   ) {}
 
   ngOnInit() {
@@ -39,19 +43,37 @@ export class TaskListComponent implements OnInit {
       return;
     }
 
-    this.listTaskByUser.listTaskByUserId(this.user.id).subscribe(
-      (response) => {
-        if (response && response.value && Array.isArray(response.value)) {
-          this.pendingTasks = response.value.filter((task) => !task.done);
-          this.doneTasks = response.value.filter((task) => task.done);
-        } else {
-          console.error('Resposta do servidor inválida:', response);
-        }
-      },
-      (error) => {
-        console.error('Erro ao listar as tarefas:', error);
-      }
+    const tasksToDo$ = this.tasksToDoService.getTasksToDo().pipe(
+      map((response) => {
+        const list = Array.isArray(response) ? response : response?.value;
+        return list && Array.isArray(list) ? list : [];
+      }),
+      catchError((err) => {
+        console.error('Erro ao listar tarefas a fazer (GET /TasksToDo):', err);
+        return of([]);
+      })
     );
+
+    const tasksByUser$ = this.listTaskByUser.listTaskByUserId(this.user.id).pipe(
+      map((response) => {
+        if (response?.value && Array.isArray(response.value)) {
+          return response.value.filter((task: any) => task.done);
+        }
+        return [];
+      }),
+      catchError((err) => {
+        console.error('Erro ao listar tarefas concluídas:', err);
+        return of([]);
+      })
+    );
+
+    forkJoin({
+      pending: tasksToDo$,
+      done: tasksByUser$
+    }).subscribe(({ pending, done }) => {
+      this.pendingTasks = pending;
+      this.doneTasks = done;
+    });
   }
 
   openCreateTaskModal() {
@@ -72,25 +94,39 @@ export class TaskListComponent implements OnInit {
 
   markTaskAsDone(taskId: number) {
     this.markTaskAsUndoneService.markTaskAsDone(taskId).subscribe(
-      () => this.loadTasks(),
+      () => {},
       (error) => {
         console.error('Erro ao marcar a tarefa como concluída:', error);
+        this.loadTasks();
       }
     );
   }
 
-  onDragStart(taskId: number) {
-    this.draggingTaskId = taskId;
+  markTaskAsUndone(taskId: number) {
+    this.markTaskAsUndoneService.markTaskAsUndone(taskId).subscribe(
+      () => {},
+      (error) => {
+        console.error('Erro ao marcar a tarefa como não concluída:', error);
+        this.loadTasks();
+      }
+    );
   }
 
-  onDropDone() {
-    if (this.draggingTaskId !== null) {
-      this.markTaskAsDone(this.draggingTaskId);
-      this.draggingTaskId = null;
+  onDrop(event: CdkDragDrop<any[]>) {
+    if (event.previousContainer === event.container) {
+      return;
     }
-  }
-
-  clearDraggingTask() {
-    this.draggingTaskId = null;
+    const task = event.item.data as { taskId: number; done: boolean };
+    transferArrayItem(
+      event.previousContainer.data,
+      event.container.data,
+      event.previousIndex,
+      event.currentIndex
+    );
+    if (event.container.id === 'doneList') {
+      this.markTaskAsDone(task.taskId);
+    } else {
+      this.markTaskAsUndone(task.taskId);
+    }
   }
 }
